@@ -34,7 +34,7 @@
             font-size: 2rem;
             line-height: 1;
         }
-        /* Estilos para la nueva sección de votación */
+        /* Estilos para la sección de votación */
         .avatar-vote-option {
             cursor: pointer;
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
@@ -45,7 +45,7 @@
             border-color: #118AB2;
         }
         #vote-results {
-            display: none; /* Oculto hasta que se vote */
+            display: none; /* Oculto por defecto */
         }
     </style>
 </head>
@@ -65,6 +65,7 @@
             </p>
         </header>
 
+        <!-- SECCIÓN DE VOTACIÓN FUNCIONAL -->
         <section id="cuestionario-votacion" class="mb-16 px-8 py-12 bg-white shadow-xl border border-gray-200 rounded-2xl">
             <div class="text-center mb-10">
                 <h2 class="text-4xl font-extrabold text-gray-800">🗳️ ¡Tu Voto Cuenta!</h2>
@@ -72,9 +73,8 @@
                     Ayúdanos a decidir qué personaje representará mejor a Asesorías y Parcelaciones CH. Elige el avatar que creas que conecta mejor con nuestros valores y clientes.
                 </p>
             </div>
-
             <div class="flex flex-col md:flex-row justify-center items-center gap-10">
-                <div id="avatar1" class="avatar-vote-option text-center p-4 border-4 border-transparent rounded-xl" onclick="selectAvatar('avatar1')">
+                <div id="avatar1" class="avatar-vote-option text-center p-4 border-4 border-transparent rounded-xl">
                     <div class="w-64 h-64 overflow-hidden rounded-xl shadow-lg mx-auto">
                         <img src="https://ftyatux.stripocdn.email/content/guids/CABINET_8a2fd8b8a39fbfd2a85f337a9460f5bcc87095c6a6276ff38017a2e4436ae397/images/gemini_generated_image_eahsboeahsboeahs_0Y4.jpg"
                              alt="Avatar Opción 1"
@@ -82,8 +82,7 @@
                     </div>
                     <h3 class="mt-4 text-2xl font-bold">Avatar 1</h3>
                 </div>
-
-                <div id="avatar2" class="avatar-vote-option text-center p-4 border-4 border-transparent rounded-xl" onclick="selectAvatar('avatar2')">
+                <div id="avatar2" class="avatar-vote-option text-center p-4 border-4 border-transparent rounded-xl">
                     <div class="w-64 h-64 overflow-hidden rounded-xl shadow-lg mx-auto">
                         <img src="https://ftyatux.stripocdn.email/content/guids/CABINET_8a2fd8b8a39fbfd2a85f337a9460f5bcc87095c6a6276ff38017a2e4436ae397/images/gemini_generated_image_64jg6c64jg6c64jg.jpg"
                              alt="Avatar Opción 2"
@@ -92,22 +91,22 @@
                     <h3 class="mt-4 text-2xl font-bold">Avatar 2</h3>
                 </div>
             </div>
-
             <div class="text-center mt-10">
-                <button id="vote-button" class="bg-[#FF6B6B] text-white font-bold py-3 px-8 rounded-lg text-xl shadow-lg hover:bg-[#ff4f4f] transition-colors disabled:bg-gray-400" onclick="submitVote()" disabled>
+                <button id="vote-button" class="bg-[#FF6B6B] text-white font-bold py-3 px-8 rounded-lg text-xl shadow-lg hover:bg-[#ff4f4f] transition-colors disabled:bg-gray-400" disabled>
                     Votar
                 </button>
             </div>
-
             <div id="vote-results" class="mt-10 max-w-2xl mx-auto">
-                 <h3 class="text-2xl font-bold text-center mb-4">Resultados</h3>
-                 <div class="w-full bg-gray-200 rounded-full h-8 dark:bg-gray-700 overflow-hidden">
-                     <div id="results-bar-1" class="bg-[#118AB2] h-8 text-xs font-medium text-blue-100 text-center p-2 leading-none" style="width: 50%">Avatar 1: 50%</div>
-                     <div id="results-bar-2" class="bg-[#06D6A0] h-8 text-xs font-medium text-green-100 text-center p-2 leading-none" style="width: 50%">Avatar 2: 50%</div>
+                 <h3 class="text-2xl font-bold text-center mb-4">Resultados en Tiempo Real</h3>
+                 <div class="w-full bg-gray-200 rounded-full h-10 dark:bg-gray-700 overflow-hidden flex text-white font-bold text-lg">
+                     <div id="results-bar-1" class="bg-[#118AB2] h-full flex items-center justify-center transition-all duration-500" style="width: 0%"></div>
+                     <div id="results-bar-2" class="bg-[#06D6A0] h-full flex items-center justify-center transition-all duration-500" style="width: 0%"></div>
                  </div>
                  <p id="winner-message" class="text-center mt-4 font-semibold text-lg"></p>
             </div>
         </section>
+        <!-- FIN DE LA SECCIÓN DE VOTACIÓN -->
+
         <section id="strategy" class="mb-12">
             <div class="text-center mb-8">
                 <h2 class="text-3xl font-bold">La Estrategia Detrás del Estilo</h2>
@@ -162,22 +161,18 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <h3 class="text-2xl font-bold text-center mb-4">El Asesor Moderno</h3>
-                    <p class="text-center mb-4">Comunica experiencia, conocimiento técnico y planificación. Es el experto con todos los detalles bajo control.</p>
                     <div class="chart-container"><canvas id="asesorModernoChart"></canvas></div>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <h3 class="text-2xl font-bold text-center mb-4">El Profesional Explicativo</h3>
-                    <p class="text-center mb-4">Transmite claridad, transparencia y disposición para guiar. Simplifica lo complejo.</p>
                     <div class="chart-container"><canvas id="profesionalExplicativoChart"></canvas></div>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <h3 class="text-2xl font-bold text-center mb-4">El Saludo Confiable</h3>
-                    <p class="text-center mb-4">Genera cercanía, confianza y accesibilidad. Es la bienvenida a una conversación.</p>
                     <div class="chart-container"><canvas id="saludoConfiableChart"></canvas></div>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <h3 class="text-2xl font-bold text-center mb-4">El Experto Apasionado</h3>
-                    <p class="text-center mb-4">Proyecta entusiasmo, éxito y motivación para la acción. Celebra los logros contigo.</p>
                     <div class="chart-container"><canvas id="expertoApasionadoChart"></canvas></div>
                 </div>
             </div>
@@ -240,6 +235,7 @@
         <p>&copy; 2025 Asesorías y Parcelaciones CH. Todos los derechos reservados.</p>
     </footer>
 
+    <!-- SCRIPT DE FIREBASE Y LÓGICA DE VOTACIÓN -->
     <script type="module">
       // Importar las funciones necesarias de los SDK
       import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
@@ -247,7 +243,7 @@
 
       // Tu configuración de Firebase
       const firebaseConfig = {
-        apiKey: "AIzaSyDx8mCis6YU201Y076dmpeOlqjtCz4Abdc", // ¡OJO! No expongas claves reales en repositorios públicos si la seguridad es crítica.
+        apiKey: "AIzaSyDx8mCis6YU201Y076dmpeOlqjtCz4Abdc",
         authDomain: "votacion-avatar-ch.firebaseapp.com",
         projectId: "votacion-avatar-ch",
         storageBucket: "votacion-avatar-ch.firebasestorage.app",
@@ -265,25 +261,21 @@
       let selectedAvatarId = null;
       let userHasVoted = false;
 
-      // Asignar eventos a los elementos
       document.getElementById('avatar1').addEventListener('click', () => selectAvatar('avatar1'));
       document.getElementById('avatar2').addEventListener('click', () => selectAvatar('avatar2'));
       document.getElementById('vote-button').addEventListener('click', submitVote);
 
-      // Escuchar cambios en la base de datos en tiempo real
       onSnapshot(voteDocRef, (doc) => {
         if (doc.exists()) {
             const votes = doc.data();
             updateResultsUI(votes.avatar1, votes.avatar2);
         } else {
-            // Si el documento no existe, lo creamos
             setDoc(voteDocRef, { avatar1: 0, avatar2: 0 });
         }
       });
 
       function selectAvatar(avatarId) {
-        if (userHasVoted) return; // Si ya votó, no hacer nada
-
+        if (userHasVoted) return;
         document.querySelectorAll('.avatar-vote-option').forEach(el => el.classList.remove('selected'));
         document.getElementById(avatarId).classList.add('selected');
         selectedAvatarId = avatarId;
@@ -293,14 +285,12 @@
       async function submitVote() {
         if (!selectedAvatarId || userHasVoted) return;
         userHasVoted = true;
-
         try {
             await runTransaction(db, async (transaction) => {
                 const updateData = {};
-                updateData[selectedAvatarId] = increment(1); // Incremento atómico
+                updateData[selectedAvatarId] = increment(1);
                 transaction.update(voteDocRef, updateData);
             });
-            console.log("Voto registrado con éxito!");
             disableVotingInterface();
         } catch (e) {
             console.error("Error al registrar el voto: ", e);
@@ -311,162 +301,108 @@
         const voteButton = document.getElementById('vote-button');
         voteButton.disabled = true;
         voteButton.textContent = '¡Gracias por votar!';
-        
         document.querySelectorAll('.avatar-vote-option').forEach(el => {
             el.style.cursor = 'default';
             if (!el.classList.contains('selected')) {
                 el.style.opacity = '0.6';
             }
         });
-      }
-
-      function updateResultsUI(votes1 = 0, votes2 = 0) {
-        const totalVotes = votes1 + votes2;
-        let percentage1 = 0; // Inicia el porcentaje en 0
-        let percentage2 = 0; // Inicia el porcentaje en 0
-
-        // Solo calcula porcentajes si hay votos
-        if (totalVotes > 0) {
-          percentage1 = (votes1 / totalVotes) * 100;
-          percentage2 = (votes2 / totalVotes) * 100;
-        }
-
-        const resultsBar1 = document.getElementById('results-bar-1');
-        const resultsBar2 = document.getElementById('results-bar-2');
-        const winnerMessage = document.getElementById('winner-message');
-
-        // Actualiza el ancho de las barras
-        // Muestra el número de votos y el porcentaje
-        resultsBar1.textContent = votes1 > 0 ? `${votes1} ${votes1 === 1 ? 'voto' : 'votos'} (${percentage1.toFixed(1)}%)` : '';
-        resultsBar2.textContent = votes2 > 0 ? `${votes2} ${votes2 === 1 ? 'voto' : 'votos'} (${percentage2.toFixed(1)}%)` : '';
-
-        // Muestra el texto del porcentaje solo si es mayor a cero
-        resultsBar1.textContent = percentage1 > 0 ? `${percentage1.toFixed(1)}%` : '';
-        resultsBar2.textContent = percentage2 > 0 ? `${percentage2.toFixed(1)}%` : '';
-
-        // Actualiza el mensaje inferior según el estado de la votación
-        if (totalVotes === 0) {
-          winnerMessage.textContent = 'Sé el primero en votar.';
-          winnerMessage.style.color = '#6B7280'; // Un color gris neutral
-        } else if (votes1 > votes2) {
-          winnerMessage.textContent = `El Avatar 1 va ganando con ${votes1} votos.`;
-          winnerMessage.style.color = '#118AB2';
-        } else if (votes2 > votes1) {
-          winnerMessage.textContent = `El Avatar 2 va a la delantera con ${votes2} votos.`;
-          winnerMessage.style.color = '#06D6A0';
-        } else {
-          winnerMessage.textContent = `¡La votación está empatada con ${votes1} votos cada uno!`;
-          winnerMessage.style.color = '#073B4C';
-        }
-
         document.getElementById('vote-results').style.display = 'block';
       }
 
+      function updateResultsUI(votes1 = 0, votes2 = 0) {
+        const numVotes1 = Number(votes1) || 0;
+        const numVotes2 = Number(votes2) || 0;
+        const totalVotes = numVotes1 + numVotes2;
+        let percentage1 = 0;
+        let percentage2 = 0;
+        if (totalVotes > 0) {
+          percentage1 = (numVotes1 / totalVotes) * 100;
+          percentage2 = (numVotes2 / totalVotes) * 100;
+        }
+        const resultsBar1 = document.getElementById('results-bar-1');
+        const resultsBar2 = document.getElementById('results-bar-2');
+        const winnerMessage = document.getElementById('winner-message');
+        resultsBar1.style.width = `${percentage1}%`;
+        resultsBar2.style.width = `${percentage2}%`;
+        resultsBar1.textContent = numVotes1 > 0 ? `${numVotes1} ${numVotes1 === 1 ? 'voto' : 'votos'} (${percentage1.toFixed(1)}%)` : '';
+        resultsBar2.textContent = numVotes2 > 0 ? `${numVotes2} ${numVotes2 === 1 ? 'voto' : 'votos'} (${percentage2.toFixed(1)}%)` : '';
+        if (totalVotes === 0) {
+          winnerMessage.textContent = 'Sé el primero en votar.';
+          winnerMessage.style.color = '#6B7280';
+        } else if (numVotes1 > numVotes2) {
+          winnerMessage.textContent = `El Avatar 1 va ganando con ${numVotes1} votos.`;
+          winnerMessage.style.color = '#118AB2';
+        } else if (numVotes2 > numVotes1) {
+          winnerMessage.textContent = `El Avatar 2 va a la delantera con ${numVotes2} votos.`;
+          winnerMessage.style.color = '#06D6A0';
+        } else {
+          winnerMessage.textContent = `¡La votación está empatada con ${numVotes1} votos cada uno!`;
+          winnerMessage.style.color = '#073B4C';
+        }
+      }
+
       // --- CÓDIGO PARA LAS GRÁFICAS DE LA INFOGRAFÍA ---
+      const chartColors = ['#118AB2', '#06D6A0', '#FFD166', '#FF6B6B'];
 
-            const tooltipConfig = {
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            title: function(tooltipItems) {
-                                const item = tooltipItems[0];
-                                let label = item.chart.data.labels[item.dataIndex];
-                                if (Array.isArray(label)) {
-                                    return label.join(' ');
-                                }
-                                return label;
-                            }
-                        }
-                    }
-                }
-            };
+      const createBarChart = (ctx, labels, data) => {
+        const canvasElement = document.getElementById(ctx);
+        if (!canvasElement) return;
+        new Chart(canvasElement, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Nivel de Comunicación',
+                    data: data,
+                    backgroundColor: chartColors,
+                    borderColor: chartColors.map(c => c + 'B3'),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { beginAtZero: true, max: 100, ticks: { color: '#073B4C' } },
+                    y: { ticks: { color: '#073B4C', font: { weight: 'bold' } } }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+      };
 
-            const chartColors = ['#118AB2', '#06D6A0', '#FFD166', '#FF6B6B'];
+      const createDonutChart = (ctx, label, data) => {
+        const canvasElement = document.getElementById(ctx);
+        if (!canvasElement) return;
+        new Chart(canvasElement, {
+            type: 'doughnut',
+            data: {
+                labels: [label, ''],
+                datasets: [{
+                    data: [data, 100 - data],
+                    backgroundColor: [chartColors[Math.floor(Math.random() * chartColors.length)], '#E5E7EB'],
+                    borderWidth: 0,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: { legend: { display: false }, tooltip: { enabled: false } }
+            }
+        });
+      };
 
-            const createBarChart = (ctx, labels, data) => {
-                // Busca el canvas usando el ID que le pasas
-                const canvasElement = document.getElementById(ctx);
-                if (!canvasElement) return; // Si no lo encuentra, no hace nada
+      createBarChart('asesorModernoChart', ['Experiencia', 'Planificación', 'Seguridad'], [95, 90, 85]);
+      createBarChart('profesionalExplicativoChart', ['Claridad', 'Transparencia', 'Guía'], [90, 95, 80]);
+      createBarChart('saludoConfiableChart', ['Confianza', 'Cercanía', 'Accesibilidad'], [95, 92, 88]);
+      createBarChart('expertoApasionadoChart', ['Motivación', 'Entusiasmo', 'Éxito'], [90, 95, 85]);
+      createDonutChart('humanizaChart', 'Conexión Emocional', 75);
+      createDonutChart('diferenciaChart', 'Diferenciación', 85);
+      createDonutChart('recuerdoChart', 'Recuerdo de Marca', 80);
 
-                new Chart(canvasElement, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Nivel de Comunicación',
-                            data: data,
-                            backgroundColor: chartColors,
-                            borderColor: chartColors.map(c => c + 'B3'),
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        ...tooltipConfig,
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            x: {
-                                beginAtZero: true,
-                                max: 100,
-                                ticks: { color: '#073B4C' }
-                            },
-                            y: {
-                                ticks: {
-                                    color: '#073B4C',
-                                    font: { weight: 'bold' }
-                                }
-                            }
-                        },
-                        plugins: {
-                            ...tooltipConfig.plugins,
-                            legend: { display: false }
-                        }
-                    }
-                });
-            };
-
-            // Llamadas para crear cada una de las gráficas
-            createBarChart('asesorModernoChart', ['Experiencia', 'Planificación', 'Seguridad'], [95, 90, 85]);
-            createBarChart('profesionalExplicativoChart', ['Claridad', 'Transparencia', 'Guía'], [90, 95, 80]);
-            createBarChart('saludoConfiableChart', ['Confianza', 'Cercanía', 'Accesibilidad'], [95, 92, 88]);
-            createBarChart('expertoApasionadoChart', ['Motivación', 'Entusiasmo', 'Éxito'], [90, 95, 85]);
-
-
-            // --- CÓDIGO PARA LAS GRÁFICAS DE DONA ---
-
-            const createDonutChart = (ctx, label, data) => {
-                const canvasElement = document.getElementById(ctx);
-                if (!canvasElement) return;
-
-                new Chart(canvasElement, {
-                    type: 'doughnut',
-                    data: {
-                        labels: [label, ''],
-                        datasets: [{
-                            data: [data, 100 - data],
-                            backgroundColor: [chartColors[Math.floor(Math.random() * chartColors.length)], '#E5E7EB'],
-                            borderWidth: 0,
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        cutout: '70%',
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: { enabled: false }
-                        }
-                    }
-                });
-            };
-
-            // Llamadas para crear cada una de las gráficas de dona
-            createDonutChart('humanizaChart', 'Conexión Emocional', 75);
-            createDonutChart('diferenciaChart', 'Diferenciación', 85);
-            createDonutChart('recuerdoChart', 'Recuerdo de Marca', 80);
     </script>
-</body>
-</html>
 </body>
 </html>
