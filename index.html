@@ -240,180 +240,116 @@
         <p>&copy; 2025 Asesorías y Parcelaciones CH. Todos los derechos reservados.</p>
     </footer>
 
-    <script>
-        // --- CÓDIGO DE GRÁFICAS EXISTENTE (SIN MODIFICACIONES) ---
-        const tooltipConfig = {
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        title: function(tooltipItems) {
-                            const item = tooltipItems[0];
-                            let label = item.chart.data.labels[item.dataIndex];
-                            if (Array.isArray(label)) {
-                                return label.join(' ');
-                            }
-                            return label;
-                        }
-                    }
-                }
-            }
-        };
+    <script type="module">
+      // Importar las funciones necesarias de los SDK
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+      import { getFirestore, doc, onSnapshot, runTransaction, increment, setDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-        const chartColors = ['#118AB2', '#06D6A0', '#FFD166', '#FF6B6B'];
+      // Tu configuración de Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyDx8mCis6YU201Y076dmpeOlqjtCz4Abdc", // ¡OJO! No expongas claves reales en repositorios públicos si la seguridad es crítica.
+        authDomain: "votacion-avatar-ch.firebaseapp.com",
+        projectId: "votacion-avatar-ch",
+        storageBucket: "votacion-avatar-ch.firebasestorage.app",
+        messagingSenderId: "597103740242",
+        appId: "1:597103740242:web:db9e80080ad019c8cc668b",
+        measurementId: "G-L9K00H5VNT"
+      };
 
-        const createBarChart = (ctx, labels, data) => {
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Nivel de Comunicación',
-                        data: data,
-                        backgroundColor: chartColors,
-                        borderColor: chartColors.map(c => c + 'B3'),
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    ...tooltipConfig,
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: { color: '#073B4C' }
-                        },
-                        y: {
-                            ticks: {
-                                color: '#073B4C',
-                                font: { weight: 'bold' }
-                            }
-                        }
-                    },
-                    plugins: {
-                        ...tooltipConfig.plugins,
-                        legend: { display: false }
-                    }
-                }
+      // Inicializar Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const voteDocRef = doc(db, "votacion", "resultados");
+
+      // --- LÓGICA DE VOTACIÓN ---
+      let selectedAvatarId = null;
+      let userHasVoted = false;
+
+      // Asignar eventos a los elementos
+      document.getElementById('avatar1').addEventListener('click', () => selectAvatar('avatar1'));
+      document.getElementById('avatar2').addEventListener('click', () => selectAvatar('avatar2'));
+      document.getElementById('vote-button').addEventListener('click', submitVote);
+
+      // Escuchar cambios en la base de datos en tiempo real
+      onSnapshot(voteDocRef, (doc) => {
+        if (doc.exists()) {
+            const votes = doc.data();
+            updateResultsUI(votes.avatar1, votes.avatar2);
+        } else {
+            // Si el documento no existe, lo creamos
+            setDoc(voteDocRef, { avatar1: 0, avatar2: 0 });
+        }
+      });
+
+      function selectAvatar(avatarId) {
+        if (userHasVoted) return; // Si ya votó, no hacer nada
+
+        document.querySelectorAll('.avatar-vote-option').forEach(el => el.classList.remove('selected'));
+        document.getElementById(avatarId).classList.add('selected');
+        selectedAvatarId = avatarId;
+        document.getElementById('vote-button').disabled = false;
+      }
+
+      async function submitVote() {
+        if (!selectedAvatarId || userHasVoted) return;
+        userHasVoted = true;
+
+        try {
+            await runTransaction(db, async (transaction) => {
+                const updateData = {};
+                updateData[selectedAvatarId] = increment(1); // Incremento atómico
+                transaction.update(voteDocRef, updateData);
             });
-        };
-
-        const createDonutChart = (ctx, label, data) => {
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: [label, ''],
-                    datasets: [{
-                        data: [data, 100 - data],
-                        backgroundColor: [chartColors[Math.floor(Math.random() * chartColors.length)], '#E5E7EB'],
-                        borderWidth: 0,
-                    }]
-                },
-                options: {
-                    ...tooltipConfig,
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '70%',
-                    plugins: {
-                        ...tooltipConfig.plugins,
-                        legend: { display: false },
-                        tooltip: { enabled: false }
-                    }
-                }
-            });
-        };
-
-        createBarChart(document.getElementById('asesorModernoChart'), ['Experiencia', 'Planificación', 'Seguridad'], [95, 90, 85]);
-        createBarChart(document.getElementById('profesionalExplicativoChart'), ['Claridad', 'Transparencia', 'Guía'], [90, 95, 80]);
-        createBarChart(document.getElementById('saludoConfiableChart'), ['Confianza', 'Cercanía', 'Accesibilidad'], [95, 92, 88]);
-        createBarChart(document.getElementById('expertoApasionadoChart'), ['Motivación', 'Entusiasmo', 'Éxito'], [90, 95, 85]);
+            console.log("Voto registrado con éxito!");
+            disableVotingInterface();
+        } catch (e) {
+            console.error("Error al registrar el voto: ", e);
+        }
+      }
+      
+      function disableVotingInterface() {
+        const voteButton = document.getElementById('vote-button');
+        voteButton.disabled = true;
+        voteButton.textContent = '¡Gracias por votar!';
         
-        createDonutChart(document.getElementById('humanizaChart'), 'Conexión Emocional', 75);
-        createDonutChart(document.getElementById('diferenciaChart'), 'Diferenciación', 85);
-        createDonutChart(document.getElementById('recuerdoChart'), 'Recuerdo de Marca', 80);
-
-        // --- NUEVO SCRIPT PARA LA VOTACIÓN ---
-        let selectedAvatarId = null;
-        let votes = {
-            avatar1: 0,
-            avatar2: 0
-        };
-
-        function selectAvatar(avatarId) {
-            // Remover la selección previa
-            document.querySelectorAll('.avatar-vote-option').forEach(el => el.classList.remove('selected'));
-            
-            // Añadir la clase 'selected' al avatar elegido
-            document.getElementById(avatarId).classList.add('selected');
-            
-            selectedAvatarId = avatarId;
-            
-            // Habilitar el botón de votar
-            document.getElementById('vote-button').disabled = false;
-        }
-
-        function submitVote() {
-            if (!selectedAvatarId) return;
-
-            // Incrementar el voto para el avatar seleccionado
-            votes[selectedAvatarId]++;
-
-            // Deshabilitar botón y opciones para prevenir más votos
-            document.getElementById('vote-button').disabled = true;
-            document.getElementById('vote-button').textContent = '¡Gracias por votar!';
-            document.querySelectorAll('.avatar-vote-option').forEach(el => {
-                el.onclick = null; // Remover el evento onclick
-                el.style.cursor = 'default';
-                if (!el.classList.contains('selected')) {
-                    el.style.opacity = '0.6';
-                }
-            });
-
-            // Mostrar y actualizar los resultados
-            updateResults();
-        }
-
-        function updateResults() {
-            const totalVotes = votes.avatar1 + votes.avatar2;
-            const percentage1 = totalVotes > 0 ? ((votes.avatar1 / totalVotes) * 100).toFixed(1) : 50;
-            const percentage2 = totalVotes > 0 ? ((votes.avatar2 / totalVotes) * 100).toFixed(1) : 50;
-
-            const resultsBar1 = document.getElementById('results-bar-1');
-            const resultsBar2 = document.getElementById('results-bar-2');
-            const winnerMessage = document.getElementById('winner-message');
-
-            // Actualizar la barra de resultados
-            const resultsContainer = document.querySelector('#vote-results .w-full');
-            resultsContainer.innerHTML = `
-                <div class="bg-[#118AB2] h-8 text-xs font-medium text-white text-center p-2 leading-none flex items-center justify-center" style="width: ${percentage1}%">Avatar 1: ${percentage1}% (${votes.avatar1} votos)</div>
-                <div class="bg-[#06D6A0] h-8 text-xs font-medium text-white text-center p-2 leading-none flex items-center justify-center" style="width: ${percentage2}%">Avatar 2: ${percentage2}% (${votes.avatar2} votos)</div>
-            `;
-            
-            if (parseFloat(percentage1) > 0 || parseFloat(percentage2) > 0) {
-                 resultsContainer.style.display = 'flex';
-            } else {
-                 resultsContainer.style.display = 'none';
+        document.querySelectorAll('.avatar-vote-option').forEach(el => {
+            el.style.cursor = 'default';
+            if (!el.classList.contains('selected')) {
+                el.style.opacity = '0.6';
             }
+        });
+      }
 
+      function updateResultsUI(votes1 = 0, votes2 = 0) {
+        const totalVotes = votes1 + votes2;
+        const percentage1 = totalVotes > 0 ? ((votes1 / totalVotes) * 100) : 50;
+        const percentage2 = totalVotes > 0 ? ((votes2 / totalVotes) * 100) : 50;
+        
+        const resultsBar1 = document.getElementById('results-bar-1');
+        const resultsBar2 = document.getElementById('results-bar-2');
+        const winnerMessage = document.getElementById('winner-message');
 
-            // Mostrar el mensaje del ganador
-            if (votes.avatar1 > votes.avatar2) {
-                winnerMessage.textContent = '¡El Avatar 1 va ganando!';
-                winnerMessage.style.color = '#118AB2';
-            } else if (votes.avatar2 > votes.avatar1) {
-                winnerMessage.textContent = '¡El Avatar 2 va a la delantera!';
-                 winnerMessage.style.color = '#06D6A0';
-            } else {
-                winnerMessage.textContent = '¡La votación está empatada!';
-                winnerMessage.style.color = '#073B4C';
-            }
+        resultsBar1.style.width = `${percentage1}%`;
+        resultsBar1.textContent = `${percentage1.toFixed(1)}%`;
+        resultsBar2.style.width = `${percentage2}%`;
+        resultsBar2.textContent = `${percentage2.toFixed(1)}%`;
 
-            // Mostrar la sección de resultados
-            document.getElementById('vote-results').style.display = 'block';
+        if (votes1 > votes2) {
+            winnerMessage.textContent = `El Avatar 1 va ganando con ${votes1} votos.`;
+            winnerMessage.style.color = '#118AB2';
+        } else if (votes2 > votes1) {
+            winnerMessage.textContent = `El Avatar 2 va a la delantera con ${votes2} votos.`;
+            winnerMessage.style.color = '#06D6A0';
+        } else if (totalVotes > 0) {
+            winnerMessage.textContent = `¡La votación está empatada con ${votes1} votos cada uno!`;
+            winnerMessage.style.color = '#073B4C';
         }
 
+        document.getElementById('vote-results').style.display = 'block';
+      }
     </script>
+</body>
+</html>
+Cambios Clave que Realicé:
 </body>
 </html>
